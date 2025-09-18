@@ -243,7 +243,7 @@ app.post('/api/webhooks', async (req, res) => {
    */
   const payload = req.body;
   const timestamp = req.headers['timestamp'] as string;
-  const signature = req.headers['bagelpay-signature'] as string;
+  const signature = req.headers['Bagelpay-Signature'] as string;
   
   // Combine payload and timestamp
   const signatureData = Buffer.concat([
