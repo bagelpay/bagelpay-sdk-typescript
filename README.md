@@ -87,7 +87,7 @@ npm install bagelpay
 ```typescript
 const client = new BagelPayClient({
   apiKey: string,        // Your BagelPay API key
-  testMode?: boolean,    // Default: false
+  testMode?: boolean,    // Default: true
   timeout?: number,      // Default: 30000ms
   baseUrl?: string       // Default: https://test.bagelpay.io
 });
