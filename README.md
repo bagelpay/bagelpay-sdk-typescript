@@ -2,22 +2,27 @@
 
 Official TypeScript SDK for the BagelPay payment platform. Easily integrate subscription billing, one-time payments, and customer management into your TypeScript/JavaScript applications.
 
-## Installation
+## 🔗 Related Links
 
-```bash
-npm install bagelpay
-```
+- 🌏 **BagelPay Website**: [https://bagelpay.io](https://bagelpay.io)
+- 🌏 **Developer Dashboard**: [https://bagelpay.io/dashboard](https://bagelpay.io/dashboard)
+- 📖 **Official Documentation**: [https://bagelpay.gitbook.io/docs](https://bagelpay.gitbook.io/docs)
+- 📖 **API Documentation**: [https://bagelpay.gitbook.io/docs/apireference](https://bagelpay.gitbook.io/docs/apireference)
+- 📧 **Technical Support**: support@bagelpayment.com
+- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/bagelpay/bagelpay-sdk-typescript/issues)
 
-## Quick Start
+
+## 🚀 Quick Start
+
+### 30-Second Quick Demo
+
 ```typescript
 import { BagelPayClient } from 'bagelpay';
 
 async function main() {
   // Initialize the client
   const client = new BagelPayClient({
-    apiKey: 'your-api-key',
-    testMode: true, // Use false for production
-    timeout: 30000 // Optional: 30 seconds timeout
+    apiKey: 'your-api-key'
   });
 
   try {
@@ -44,6 +49,12 @@ async function main() {
 main().catch(console.error);
 ```
 
+## 📦 Installation Guide
+
+```bash
+npm install bagelpay
+```
+
 ## Core Features
 
 ### 🛍️ Product Management
@@ -67,6 +78,7 @@ main().catch(console.error);
 - Transaction listing and filtering
 - Subscription analytics
 - Customer insights
+
 
 ## API Reference
 
