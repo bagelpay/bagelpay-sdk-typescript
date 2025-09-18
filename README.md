@@ -197,6 +197,134 @@ const client = new BagelPayClient({
 });
 ```
 
+## 🚀 Webhook Integration
+
+```typescript
+import express from 'express';
+import crypto from 'crypto';
+import ngrok from 'ngrok';
+
+const app = express();
+const WEBHOOK_SECRET = 'your_webhook_key';
+
+// Middleware to parse raw body for signature verification
+app.use('/api/webhooks', express.raw({ type: 'application/json' }));
+
+function verifyWebhookSignature(signatureData: Buffer, signature: string, secret: string): boolean {
+  /**
+   * Verify webhook signature for security
+   */
+  const expectedSignature = crypto
+    .createHmac('sha256', secret)
+    .update(signatureData)
+    .digest('hex');
+
+  return crypto.timingSafeEqual(
+    Buffer.from(expectedSignature, 'hex'),
+    Buffer.from(signature, 'hex')
+  );
+}
+
+app.post('/api/webhooks', async (req, res) => {
+  /**
+   * Handle BagelPay webhook notifications
+   */
+  const payload = req.body;
+  const timestamp = req.headers['timestamp'] as string;
+  const signature = req.headers['bagelpay-signature'] as string;
+  
+  // Combine payload and timestamp
+  const signatureData = Buffer.concat([
+    Buffer.from(timestamp, 'utf8'),
+    Buffer.from('.', 'utf8'),
+    payload
+  ]);
+
+  if (!verifyWebhookSignature(signatureData, signature, WEBHOOK_SECRET)) {
+    return res.status(401).json({ error: 'Invalid signature' });
+  }
+
+  try {
+    const event = JSON.parse(payload.toString());
+    const eventType = event.event_type;
+    const data = event.object;
+
+    switch (eventType) {
+      case 'checkout.completed':
+        // Handle checkout completed events
+        console.log('Checkout completed:', event);
+        break;
+      
+      case 'checkout.failed':
+        // Handle checkout failed events
+        console.log('Checkout failed:', event);
+        break;
+      
+      case 'checkout.cancel':
+        // Handle checkout cancelled events
+        console.log('Checkout cancelled:', event);
+        break;
+      
+      case 'subscription.trialing':
+        // Handle subscription trialing events
+        console.log('Subscription trialing:', event);
+        break;
+      
+      case 'subscription.paid':
+        // Handle subscription paid events
+        console.log('Subscription paid:', event);
+        break;
+      
+      case 'subscription.canceled':
+        // Handle subscription cancelled events
+        console.log('Subscription cancelled:', event);
+        break;
+      
+      case 'refund.created':
+        // Handle refund created events
+        console.log('Refund created:', event);
+        break;
+      
+      default:
+        console.log(`Unhandled event type: ${eventType}`);
+    }
+
+    return res.status(200).json({ message: 'Success' });
+  } catch (error) {
+    console.error('Webhook processing error:', error);
+    return res.status(500).json({ error: 'Processing failed' });
+  }
+});
+
+// Start server with ngrok tunnel
+async function startServer() {
+  const listeningPort = 8000;
+  
+  try {
+    // Set your ngrok auth token
+    await ngrok.authtoken('your_ngrok_key');
+    
+    const publicUrl = await ngrok.connect({
+      addr: listeningPort,
+      proto: 'http',
+      subdomain: 'stunning-crane-direct' // Optional: use your reserved subdomain
+    });
+    
+    console.log(`ngrok Public URL: ${publicUrl}`);
+    
+    app.listen(listeningPort, '0.0.0.0', () => {
+      console.log(`Server running on port ${listeningPort}`);
+    });
+  } catch (error) {
+    console.error('Failed to start server:', error);
+  }
+}
+
+if (require.main === module) {
+  startServer();
+}
+```
+
 ## Support
 
 - **Documentation**: [https://bagelpay.gitbook.io/docs/documentation](https://bagelpay.gitbook.io/docs/documentation)
